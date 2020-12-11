@@ -18,13 +18,15 @@ Read till the beginning of chapter 2.5
 
 1. Create new table `weekdays` in your database and fill it with numbers and names of week days, as follows:
 
-- 1 Sunday
-- 2 Monday
-- 3 Tuesday
-- 4 Wednesday
-- 5 Thursday
-- 6 Friday
-- 7 Saturday
+   | weekId | name      |
+   | ------ | --------- |
+   | 1      | Sunday    |
+   | 2      | Monday    |
+   | 3      | Tuesday   |
+   | 4      | Wednesday |
+   | 5      | Thursday  |
+   | 6      | Friday    |
+   | 7      | Saturday  |
 
 1. Display all data stored in newly created table `weekdays`
 
