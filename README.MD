@@ -16,15 +16,16 @@ Read till the beginning of chapter 2.5
 
 ### Working with new table `weekdays`
 
-1. Create new table `weekdays` in your database and fill it with numbers
-   and names of week days, as follows:
-   1 Sunday
-   2 Monday
-   3 Tuesday
-   4 Wednesday
-   5 Thursday
-   6 Friday
-   7 Saturday
+1. Create new table `weekdays` in your database and fill it with numbers and names of week days, as follows:
+
+- 1 Sunday
+- 2 Monday
+- 3 Tuesday
+- 4 Wednesday
+- 5 Thursday
+- 6 Friday
+- 7 Saturday
+
 1. Display all data stored in newly created table `weekdays`
 
 1. [Optional for self investigation] Display all names of days having less than 7 characters in the day name.
@@ -71,8 +72,9 @@ Working with your database:
    statements before and after update.
 
 1. Run your script:
-   a) using command SOURCE from mysql console
-   b) using redirection from cmd window
+
+   - using command SOURCE from mysql console
+   - using redirection from cmd window
 
 1. Exit to cmd window and build the `db.txt` dump script, using tool mysqldump.
 
