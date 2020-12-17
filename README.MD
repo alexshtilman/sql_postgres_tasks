@@ -81,3 +81,37 @@ Working with your database:
 1. Exit to cmd window and build the `db.txt` dump script, using tool mysqldump.
 
 1. Test your script, loading it from cmd window (using mysql with redirection)
+
+## task_04
+
+### Tutorial: Chapter 2.6
+
+- Download file hw4_data_sql.txt,
+- open SQL Client
+- create new database and select it by command USE
+- load the file using command SOURCE.
+  This script will create, fill and show the table `products`
+
+When table is loaded, perform the following SQL queries:
+
+1. Display using COUNT(\*) number of records in table products (to be 14).
+
+1. Display total quantity, total cost and average price of products in table `products`.
+   (The cost is quantity \* price)
+
+1. Display list of all productCode-s existing in table `products`.
+   The list would be without repetitions (DISTINCT) and ordered alphabetically.
+
+1. Display the following summary information per each product code (GROUP BY) in table `products`:
+
+   | Product Code | Total Quantity | Min Price | Max Price | Average Price |
+   | ------------ | -------------- | --------- | --------- | ------------- |
+
+1. Repeat the report 6, adding the total summary (WITH ROLLUP)
+
+1. Repeat the report 6, displaying only Product Codes, beginning from letter 'P' (HAVING)
+
+1. Repeat the report 6, displaying only such Product Codes, for those all products
+   with same code have the same price.
+
+1. Update table `products`, increasing the price of all Pens by 20%.

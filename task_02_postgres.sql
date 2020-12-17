@@ -12,7 +12,7 @@ SELECT * from products where price IN (0.48, 0.49 , 1.25)
 SELECT name, quantity,price from products ORDER BY price DESC LIMIT 3;
 -- 7
 SELECT 
-    CONCAT(productCode || ' - ' ||  name) AS "Product Description",
+    productCode || ' - ' ||  name AS "Product Description",
     price as "Item Price",
     quantity as "Quantity",
     (price * quantity) as "Cost" 

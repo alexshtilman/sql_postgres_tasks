@@ -1,1 +1,4 @@
 .vscode
+mysql_rapsberry.session.sql
+pg_rapsberry.session.sql
+mongo.mongodb
