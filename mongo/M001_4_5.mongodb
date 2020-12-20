@@ -1,0 +1,8 @@
+/*
+To complete this exercise connect to your Atlas cluster using the in-browser IDE space at the end of this chapter.
+
+What is the name of the listing in the sample_airbnb.listingsAndReviews dataset that accommodates more than 6 people and has exactly 50 reviews?
+
+Copy/Paste the value of the "name" field into the response field without quotation marks.
+*/
+db.listingsAndReviews.find({accommodates:{$gte:6},reviews:{$size:50}},{$project:{_id:0,name:1}}) 
