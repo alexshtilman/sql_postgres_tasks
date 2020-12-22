@@ -1,0 +1,5 @@
+/*
+How many companies in the sample_training.companies collection have offices in the city of Seattle?
+Copy/paste your answer to the response field.
+*/
+db.listingsAndReviews.find({"offices.city":"Seattle"}).count()
