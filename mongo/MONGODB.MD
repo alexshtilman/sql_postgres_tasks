@@ -229,3 +229,191 @@ mongoexport --port 30000 --db applicationData --collection products -o products.
 mongoimport --port 30000 products.json
 
 ```
+
+## replication
+
+```yml
+#(node2,node3)
+storage:
+  dbPath: /var/mongodb/db/node1
+net:
+  bindIp: 192.168.103.100,localhost
+  port: 27011
+security:
+  authorization: enabled
+  keyFile: /var/mongodb/pki/m103-keyfile
+systemLog:
+  destination: file
+  path: /var/mongodb/db/node1/mongod.log
+  logAppend: true
+processManagement:
+  fork: true
+replication:
+  replSetName: m103-example
+```
+
+```bash
+sudo mkdir -p /var/mongodb/pki/
+sudo chown vagrant:vagrant /var/mongodb/pki/
+openssl rand -base64 741 > /var/mongodb/pki/m103-keyfile
+chmod 400 /var/mongodb/pki/m103-keyfile
+
+mongod -f node2.conf
+mongod -f node3.conf
+
+use admin
+db.createUser({
+  user: "m103-admin",
+  pwd: "m103-pass",
+  roles: [
+    {role: "root", db: "admin"}
+  ]
+})
+#hostname:port!
+rs.add("m103-repl:27002")
+rs.add("m103-repl:27003")
+
+
+exit
+mongo --host "m103-example/192.168.103.100:27011" -u "m103-admin"
+mongo --host "m103-repl/localhost:27004"  -u m103-admin -p m103-pass --authenticationDatabase admin
+-p "m103-pass" --authenticationDatabase "admin"
+
+#status node
+rs.status()
+rs.isMaster()
+db.serverStatus()['repl']
+rs.printReplicationInfo()
+#demote node
+rs.stepDown()
+
+rs.add("m103:27014")
+rs.addArb("m103:28000")
+
+```
+
+## logs
+
+```js
+var stats = db.oplog.rs.stats();
+rs.printReplicationInfo();
+```
+
+## reconfig
+
+```js
+cfg = rs.conf();
+cfg.members[3].votes = 0;
+cfg.members[3].hidden = true;
+cfg.members[3].priority = 0;
+rs.reconfig(cfg);
+//enable read from slaves
+rs.slaveOk();
+```
+
+## sharding
+
+```yaml
+sharding:
+  clusterRole: configsvr
+replication:
+  replSetName: m103-csrs
+security:
+  keyFile: /var/mongodb/pki/m103-keyfile
+net:
+  bindIp: localhost,192.168.103.100
+  port: 26001
+systemLog:
+  destination: file
+  path: /var/mongodb/db/csrs1.log
+  logAppend: true
+processManagement:
+  fork: true
+storage:
+  dbPath: /var/mongodb/db/csrs1
+```
+
+```bash
+mongod -f csrs_1.conf
+mongod -f csrs_2.conf
+mongod -f csrs_3.conf
+mongo --port 26001
+
+```
+
+```js
+rs.initiate()
+use admin
+db.createUser({
+  user: "m103-admin",
+  pwd: "m103-pass",
+  roles: [
+    {role: "root", db: "admin"}
+  ]
+})
+db.auth("m103-admin", "m103-pass")
+rs.add("192.168.103.100:26002")
+rs.add("192.168.103.100:26003")
+```
+
+### mongos
+
+```yml
+sharding:
+  configDB: m103-csrs/192.168.103.100:26001,192.168.103.100:26002,192.168.103.100:26003
+security:
+  keyFile: /var/mongodb/pki/m103-keyfile
+net:
+  bindIp: localhost,192.168.103.100
+  port: 26000
+systemLog:
+  destination: file
+  path: /var/mongodb/db/mongos.log
+  logAppend: true
+processManagement:
+  fork: true
+```
+
+```bash
+mongos -f mongos.conf
+sh.status()
+```
+
+Update node conf:
+
+```yml
+sharding:
+  clusterRole: shardsvr
+storage:
+  dbPath: /var/mongodb/db/node1
+  wiredTiger:
+    engineConfig:
+      cacheSizeGB: .1
+net:
+  bindIp: 192.168.103.100,localhost
+  port: 27011
+security:
+  keyFile: /var/mongodb/pki/m103-keyfile
+systemLog:
+  destination: file
+  path: /var/mongodb/db/node1/mongod.log
+  logAppend: true
+processManagement:
+  fork: true
+replication:
+  replSetName: m103-repl
+```
+
+```bash
+#then shutdown servers
+use admin
+db.shutdownServer()
+
+#then
+rs.stepDown() primary
+sh.addShard("shard1/localhost:27001,localhost:27002,localhost:27003")
+```
+
+## enable sharding
+
+sh.enableSharding("m103")
