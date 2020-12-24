@@ -416,4 +416,29 @@ sh.addShard("shard1/localhost:27001,localhost:27002,localhost:27003")
 
 ## enable sharding
 
-sh.enableSharding("m103")
+```js
+sh.enableSharding("m103");
+db.products.createIndex({ sku: 1 });
+sh.shardCollection("m103.products", { sku: 1 });
+```
+
+mongoimport --db=m103 --host localhost --port 26000 -u m103-admin -p m103-pass --collection=products --authenticationDatabase admin --file=/dataset/products.json
+
+mongo --host "localhost:26000" -u m103-admin -p m103-pass --authenticationDatabase admin
+
+mongoimport /dataset/products.part2.json --port 26000 -u "m103-admin" -p "m103-pass" --authenticationDatabase "admin" --db m103 --collection products
+
+## chunks
+
+```js
+use config
+db.settings.save({_id: "chunksize", value: 2})
+```
+
+## shard chunks balancer
+
+```js
+sh.startBalancer(timeout, interval);
+sh.stopBalancer(timeout, interval);
+sh.setBalancerState(boolean);
+```
