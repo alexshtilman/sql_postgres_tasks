@@ -442,3 +442,27 @@ sh.startBalancer(timeout, interval);
 sh.stopBalancer(timeout, interval);
 sh.setBalancerState(boolean);
 ```
+
+## aggregations
+
+```js
+{ $match: { writers: { $elemMatch: { $exists: true } } }
+db.movies.findOne({title: "Life Is Beautiful"}, { _id: 0, cast: 1,
+
+writers: {
+  $map: {
+    input: "$writers",
+    as: "writer",
+    in: {
+      $arrayElemAt: [
+        {
+          $split: [ "$$writer", " (" ]
+        },
+        0
+      ]
+    }
+  }
+}
+})
+
+```
